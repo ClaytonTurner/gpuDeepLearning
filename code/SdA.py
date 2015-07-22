@@ -45,6 +45,8 @@ from logistic_sgd import LogisticRegression, load_data
 from mlp import HiddenLayer
 from dA import dA
 
+theano.config.exception_verbosity='high'
+theano.config.on_unused_input='ignore'
 
 # start-snippet-1
 class SdA(object):
