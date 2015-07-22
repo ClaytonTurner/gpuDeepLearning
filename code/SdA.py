@@ -322,12 +322,31 @@ class SdA(object):
         def test_score():
             return [test_score_i(i) for i in xrange(n_test_batches)]
 
-        return train_fn, valid_score, test_score
+	info_i = theano.function(
+            [index],
+            self.info,
+            givens={
+                self.x: test_set_x[
+                    index * batch_size: (index + 1) * batch_size
+                ],
+                self.y: test_set_y[
+                    index * batch_size: (index + 1) * batch_size
+                ]
+            },
+            name='info_i'
+        )
+
+        def info():
+            return [info_i(i) for i in xrange(n_test_batches)]
 
 
-def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
+        return train_fn, valid_score, test_score, info
+
+
+def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
              pretrain_lr=0.001, training_epochs=1000,
-             dataset='mnist.pkl.gz', batch_size=1):
+             dataset='mnist.pkl.gz', batch_size=1,
+	     GPU=False):
     """
     Demonstrates how to train and test a stochastic denoising autoencoder.
 
@@ -351,6 +370,16 @@ def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
     """
 
+    if dataset == "mnist.pkl.gz":
+	print "No dataset specifically mentioned. Exiting..."
+	import sys
+	sys.exit(0)
+
+    if GPU:
+	theano.config.device="gpu0"
+	theano.config.floatX="float32" # Has to be float32 for the GPU
+	theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
+
     datasets = load_data(dataset)
 
     train_set_x, train_set_y = datasets[0]
@@ -368,9 +397,10 @@ def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
     # construct the stacked denoising autoencoder class
     sda = SdA(
         numpy_rng=numpy_rng,
-        n_ins=28 * 28,
+        #n_ins=28 * 28,
+	n_ins=train_set_x.get_value(borrow=True).shape[1],
         hidden_layers_sizes=[1000, 1000, 1000],
-        n_outs=10
+        n_outs=2
     )
     # end-snippet-3 start-snippet-4
     #########################
@@ -433,11 +463,12 @@ def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
     done_looping = False
     epoch = 0
-
+    best_p_values = []
     while (epoch < training_epochs) and (not done_looping):
         epoch = epoch + 1
         for minibatch_index in xrange(n_train_batches):
             minibatch_avg_cost = train_fn(minibatch_index)
+
             iter = (epoch - 1) * n_train_batches + minibatch_index
 
             if (iter + 1) % validation_frequency == 0:
@@ -468,10 +499,37 @@ def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
                            'best model %f %%') %
                           (epoch, minibatch_index + 1, n_train_batches,
                            test_score * 100.))
+    		
+		    best_p_values = []
+                    best_y = []
+                    best_y_pred = []
+                    for j in range(len(results)):
+                        p_values = results[j][0]
+                        y_pred = results[j][1]
+                        y = results[j][2]
+                        for i in range(numpy.size(p_values,axis=0)):
+                                #print round(p_values[i,1]),y_pred,y,test_losses[j]
+                                best_p_values.append(p_values[i,0]) # 1 for yes sle, 0 for no sle
+                                best_y.append(1-y[i])
+                                best_y_pred.append(y_pred[i])
+
 
             if patience <= iter:
                 done_looping = True
                 break
+
+    best_p_values_a = numpy.asarray(best_p_values)
+    best_y_a = numpy.asarray(best_y)
+    import os
+    if fold < 10:
+      fold = "0"+str(fold)
+    else:
+      fold = str(fold)
+    fname = os.path.expanduser("~/gpuDeepLearning/results_SdA/"+fold)
+    numpy.savetxt(fname+"_labels.txt", best_y_a)
+    numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
+    print "best logistic values:"
+
 
     end_time = timeit.default_timer()
     print(
@@ -488,4 +546,6 @@ def test_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
 
 if __name__ == '__main__':
-    test_SdA()
+    import sys
+    gpu = True if sys.argv[1] > 0 else False
+    run_SdA(GPU=gpu)
