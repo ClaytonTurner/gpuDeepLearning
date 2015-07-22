@@ -1,6 +1,6 @@
 # Code
 Here lies the code for each of the deep learning algorithms
 
-The __main__ of the algorithms is where our specific tinkering for each algorithm exists
+The \_\_main\_\_ of the algorithms is where our specific tinkering for each algorithm exists
 
 Data loading will also be altered
