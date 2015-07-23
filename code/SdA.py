@@ -48,6 +48,11 @@ from dA import dA
 theano.config.exception_verbosity='high'
 theano.config.on_unused_input='ignore'
 
+# Comment out when not using GPU
+theano.config.device="gpu0"
+theano.config.floatX="float32" # Has to be float32 for the GPU
+theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
+
 # start-snippet-1
 class SdA(object):
     """Stacked denoising auto-encoder class (SdA)
@@ -348,7 +353,7 @@ class SdA(object):
 def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
              pretrain_lr=0.001, training_epochs=1000,
              dataset='mnist.pkl.gz', batch_size=1,
-	     GPU=False):
+	     ):
     """
     Demonstrates how to train and test a stochastic denoising autoencoder.
 
@@ -371,16 +376,12 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
     :param dataset: path the the pickled dataset
 
     """
-
-    if dataset == "mnist.pkl.gz":
-	print "No dataset specifically mentioned. Exiting..."
-	import sys
-	sys.exit(0)
-
-    if GPU:
-	theano.config.device="gpu0"
-	theano.config.floatX="float32" # Has to be float32 for the GPU
-	theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
+   
+    #if dataset == "mnist.pkl.gz":
+	#print "No dataset specifically mentioned. Exiting..."
+	#import sys
+	#sys.exit(0)
+    
 
     datasets = load_data(dataset)
 
@@ -527,7 +528,10 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
       fold = "0"+str(fold)
     else:
       fold = str(fold)
-    fname = os.path.expanduser("~/gpuDeepLearning/results_SdA/"+fold)
+    fname_str = "~/gpuDeepLearning/results_SdA"
+    if GPU:
+      fname_str += "_gpu"
+    fname = os.path.expanduser(fname_str+"/"+fold)
     numpy.savetxt(fname+"_labels.txt", best_y_a)
     numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
     print "best logistic values:"
