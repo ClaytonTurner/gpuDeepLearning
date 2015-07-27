@@ -405,7 +405,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
         #n_ins=28 * 28,
         n_ins=train_set_x.get_value(borrow=True).shape[1],
         hidden_layers_sizes=[1000, 1000, 1000],
-        n_outs=2
+        n_outs=10
     )
     # end-snippet-3 start-snippet-4
     #########################
