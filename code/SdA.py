@@ -48,11 +48,8 @@ from dA import dA
 theano.config.exception_verbosity='high'
 theano.config.on_unused_input='ignore'
 
-# Comment out when not using GPU
-#THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True'
-#theano.config.device="gpu0"
-theano.config.floatX="float32" # Has to be float32 for the GPU
-#theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
+# Flags to use with GPU
+# THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True'
 
 # start-snippet-1
 class SdA(object):
