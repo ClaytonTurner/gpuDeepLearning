@@ -49,9 +49,9 @@ theano.config.exception_verbosity='high'
 theano.config.on_unused_input='ignore'
 
 # Comment out when not using GPU
-theano.config.device="gpu0"
+#theano.config.device="gpu0"
 theano.config.floatX="float32" # Has to be float32 for the GPU
-theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
+#theano.nvcc.fastmath="True" # Aids in CUDA div and sqrt speed at the cost of precision
 
 # start-snippet-1
 class SdA(object):
@@ -185,6 +185,8 @@ class SdA(object):
         # symbolic variable that points to the number of errors made on the
         # minibatch given by self.x and self.y
         self.errors = self.logLayer.errors(self.y)
+
+        self.info = self.logLayer.info(self.sigmoid_layers[-1].output,self.y)
 
     def pretraining_functions(self, train_set_x, batch_size):
         ''' Generates a list of functions, each of them implementing one
@@ -329,38 +331,37 @@ class SdA(object):
         def test_score():
             return [test_score_i(i) for i in xrange(n_test_batches)]
 
-	info_i = theano.function(
-            [index],
-            self.info,
-            givens={
-                self.x: test_set_x[
-                    index * batch_size: (index + 1) * batch_size
-                ],
-                self.y: test_set_y[
-                    index * batch_size: (index + 1) * batch_size
-                ]
-            },
-            name='info_i'
+        info_i = theano.function(
+                [index],
+                self.info,
+                givens={
+                    self.x: test_set_x[
+                        index * batch_size: (index + 1) * batch_size
+                    ],
+                    self.y: test_set_y[
+                        index * batch_size: (index + 1) * batch_size
+                    ]
+                },
+                name='info_i'
         )
 
         def info():
             return [info_i(i) for i in xrange(n_test_batches)]
-
 
         return train_fn, valid_score, test_score, info
 
 
 def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
              pretrain_lr=0.001, training_epochs=1000,
-             dataset='mnist.pkl.gz', batch_size=1,
-	     ):
+             dataset='mnist.pkl.gz', batch_size=1,GPU=False,fold=-1
+         ):
     """
     Demonstrates how to train and test a stochastic denoising autoencoder.
 
     This is demonstrated on MNIST.
 
-    :type learning_rate: float
-    :param learning_rate: learning rate used in the finetune stage
+    :type finetune_lr: float
+    :param finetune_lr: learning rate used in the finetune stage
     (factor for the stochastic gradient)
 
     :type pretraining_epochs: int
@@ -378,9 +379,9 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
     """
    
     #if dataset == "mnist.pkl.gz":
-	#print "No dataset specifically mentioned. Exiting..."
-	#import sys
-	#sys.exit(0)
+    #print "No dataset specifically mentioned. Exiting..."
+    #import sys
+    #sys.exit(0)
     
 
     datasets = load_data(dataset)
@@ -401,7 +402,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
     sda = SdA(
         numpy_rng=numpy_rng,
         #n_ins=28 * 28,
-	n_ins=train_set_x.get_value(borrow=True).shape[1],
+        n_ins=train_set_x.get_value(borrow=True).shape[1],
         hidden_layers_sizes=[1000, 1000, 1000],
         n_outs=2
     )
@@ -441,7 +442,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
     # get the training, validation and testing function for the model
     print '... getting the finetuning functions'
-    train_fn, validate_model, test_model = sda.build_finetune_functions(
+    train_fn, validate_model, test_model, info = sda.build_finetune_functions(
         datasets=datasets,
         batch_size=batch_size,
         learning_rate=finetune_lr
@@ -494,6 +495,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
                     # save best validation score and iteration number
                     best_validation_loss = this_validation_loss
                     best_iter = iter
+                    results = info()
 
                     # test it on the test set
                     test_losses = test_model()
@@ -502,8 +504,8 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
                            'best model %f %%') %
                           (epoch, minibatch_index + 1, n_train_batches,
                            test_score * 100.))
-    		
-		    best_p_values = []
+
+                    best_p_values = []
                     best_y = []
                     best_y_pred = []
                     for j in range(len(results)):
@@ -516,21 +518,20 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
                                 best_y.append(1-y[i])
                                 best_y_pred.append(y_pred[i])
 
-
             if patience <= iter:
                 done_looping = True
                 break
 
     best_p_values_a = numpy.asarray(best_p_values)
     best_y_a = numpy.asarray(best_y)
-    import os
+    #import os
     if fold < 10:
-      fold = "0"+str(fold)
+        fold = "0"+str(fold)
     else:
-      fold = str(fold)
+        fold = str(fold)
     fname_str = "~/gpuDeepLearning/results_SdA"
     if GPU:
-      fname_str += "_gpu"
+        fname_str += "_gpu"
     fname = os.path.expanduser(fname_str+"/"+fold)
     numpy.savetxt(fname+"_labels.txt", best_y_a)
     numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
@@ -553,5 +554,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
 if __name__ == '__main__':
     import sys
-    gpu = True if sys.argv[1] > 0 else False
-    run_SdA(GPU=gpu)
+    #gpu = True if sys.argv[1] > 0 else False
+    gpu = False
+    run_SdA(pretraining_epochs=0,GPU=gpu,fold=0) # GPU: this is just for saving files
+                     # Use theano's env variables to actually switch it
