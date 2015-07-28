@@ -527,7 +527,7 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
         fold = "0"+str(fold)
     else:
         fold = str(fold)
-    fname_str = "~/gpuDeepLearning/results_SdA"
+    fname_str = "~/gpuDeepLearning/results/SdA"
     if GPU:
         fname_str += "_gpu"
     fname = os.path.expanduser(fname_str+"/"+fold)
@@ -553,6 +553,6 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
 if __name__ == '__main__':
     import sys
     #gpu = True if sys.argv[1] > 0 else False
-    gpu = False
+    gpu = True
     run_SdA(pretraining_epochs=0,GPU=gpu,fold=0) # GPU: this is just for saving files
                      # Use theano's env variables to actually switch it
