@@ -41,22 +41,28 @@ def pickle_data():
                         col_list[ii][i] = unique_vals.index(item)
                     elif item == "?":
                         col_list[ii][i] = "NaN"
-        data_mat = col_list
-        data_mat = np.matrix(data_mat).T
+            data_mat.append(col_list[0])
+
+        # convert out of the column format
+        data_mat = np.array(data_mat).T
         # Imputer converts missing values (?'s) to the mean of the column
         #   mean, median, and mode are available options for strategy
-        imp = Imputer(missing_values="NaN", strategy="mean", axis=0)
-        data_mat = imp.fit(data_mat)
-        data_mat = imp.transform(data_mat)
+        imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
+        print data_mat[0]
+        data_mat = imp.fit_transform(data_mat)
+        print data_mat[0]
+        #imp.fit(data_mat)
+        #print data_mat[0]
+        #imp.transform(data_mat)
+        #print data_mat[0]
 
         encoder = OneHotEncoder()
-        data_mat = encoder.fit(data_mat)
-        print datalines[0]
-
+        #data_mat = encoder.fit(data_mat)
+        encoder.fit(data_mat)
         y = data_mat[:,-1]
         x = data_mat[:,:-1]
-        print "x[0]",x[0]
-        print "y[0]",y[0]
+        print "y:", y
+        print "x:", x
 
     elif dataset == "heritage":
         print "Using "+dataset+" dataset"
