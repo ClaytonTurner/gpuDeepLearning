@@ -48,21 +48,16 @@ def pickle_data():
         # Imputer converts missing values (?'s) to the mean of the column
         #   mean, median, and mode are available options for strategy
         imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
-        print data_mat[0]
         data_mat = imp.fit_transform(data_mat)
-        print data_mat[0]
-        #imp.fit(data_mat)
-        #print data_mat[0]
-        #imp.transform(data_mat)
-        #print data_mat[0]
 
-        encoder = OneHotEncoder()
+        encoder = OneHotEncoder(sparse=False)
         #data_mat = encoder.fit(data_mat)
-        encoder.fit(data_mat)
+        data_mat = encoder.fit_transform(data_mat)
         y = data_mat[:,-1]
         x = data_mat[:,:-1]
         print "y:", y
         print "x:", x
+        print len(x[0])
 
     elif dataset == "heritage":
         print "Using "+dataset+" dataset"
