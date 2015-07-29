@@ -49,9 +49,10 @@ def pickle_data():
         #   mean, median, and mode are available options for strategy
         imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
         data_mat = imp.fit_transform(data_mat)
-
-        encoder = OneHotEncoder(sparse=False)
-        #data_mat = encoder.fit(data_mat)
+        # OneHotEncode categorical features so we can use them in NNs
+        categorical_feats = [0,1,2,3,4,5,6,8,9].extend([x for x in range(20,47)])
+        encoder = OneHotEncoder(categorical_features=categorical_feats, sparse=False)
+        OneHotEncoder()
         data_mat = encoder.fit_transform(data_mat)
         y = data_mat[:,-1]
         x = data_mat[:,:-1]
