@@ -50,7 +50,11 @@ def pickle_data():
         imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
         data_mat = imp.fit_transform(data_mat)
         # OneHotEncode categorical features so we can use them in NNs
-        categorical_feats = [0,1,2,3,4,5,6,8,9].extend([x for x in range(20,47)])
+        categorical_feats = [0, 1, 2, 3, 4, 5, 6, 8,
+                             9, 20, 21, 22, 23, 24, 25,
+                             26, 27, 28, 29, 30, 31, 32,
+                             33, 34, 35, 36, 37, 38, 39,
+                             40, 41, 42, 43, 44, 45, 46]
         encoder = OneHotEncoder(categorical_features=categorical_feats, sparse=False)
         OneHotEncoder()
         data_mat = encoder.fit_transform(data_mat)
@@ -58,7 +62,7 @@ def pickle_data():
         x = data_mat[:,:-1]
         print "y:", y
         print "x:", x
-        print len(x[0])
+        print "Feature count after encoding:",len(x[0])
 
     elif dataset == "heritage":
         print "Using "+dataset+" dataset"
