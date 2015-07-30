@@ -175,11 +175,11 @@ class LogisticRegression(object):
 
 
 def load_data(dataset):
-    ''' Loads the dataset
+    """ Loads the dataset
 
     :type dataset: string
     :param dataset: the path to the dataset (here MNIST)
-    '''
+    """
 
     #############
     # LOAD DATA #

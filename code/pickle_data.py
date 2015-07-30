@@ -2,6 +2,7 @@ __author__ = 'caturner3'
 
 import sys
 import cPickle as pickle
+import gzip
 import numpy as np
 from sklearn.preprocessing import Imputer, OneHotEncoder
 import re
@@ -11,10 +12,12 @@ def pickle_data():
     """
     This single-function file is for pickling datasets to be sent to each algorithm
     """
-    if(len(sys.argv) <= 1):
-        print >> sys.stderr, "Proper usage of pickle_data.py: pickle_data.py <dataset>"
+    if(len(sys.argv) <= 2):
+        print >> sys.stderr, "Proper usage of pickle_data.py: pickle_data.py <dataset> <tenth of dataset for testing>"
         sys.exit(1)
     dataset = sys.argv[1]
+    tenth = sys.argv[2]
+    td_amt = .80 # training data amount - inverse is validation amount
     if dataset == "diabetes":
         # The goal is to predict readmission
         print "Using "+dataset+" dataset"
@@ -70,5 +73,27 @@ def pickle_data():
     else:
         print "Improper dataset specified"
         sys.exit(1)
+
+    # Let's split the data into training, validation, and testing
+    rows = len(x)
+    kfold = 10 # Assuming 10-fold cross validation for everything
+    test_start = int((tenth-1)*rows/kfold)
+    test_end = int((tenth)*rows/kfold)
+    test_matrix = x[test_start:test_end]
+    test_labels = y[test_start:test_end]
+    training_matrix = np.delete(x, [i for i in range(test_start, test_end)], 0)
+    training_labels = np.delete(y, [i for i in range(test_start, test_end)], 0)
+    # Validation after testing so we don't have to worry about the meshing
+    #   of validation and testing data
+    valid_matrix = x[(td_amt*rows):]
+    valid_labels = y[(td_amt*rows):]
+
+    # Now let's compress the data to a .pkl.gz for logistic_sgd's load_data()
+    pickle_array = [[training_matrix, training_labels],
+                    [valid_matrix, valid_labels],
+                    test_matrix, test_labels]
+    f = gzip.open("diabetes.pkl.gz", "wb")
+    pickle.dump(pickle_array, f)
+    f.close()
 
 pickle_data()
