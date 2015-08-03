@@ -16,7 +16,7 @@ def pickle_data():
         print >> sys.stderr, "Proper usage of pickle_data.py: pickle_data.py <dataset> <tenth of dataset for testing>"
         sys.exit(1)
     dataset = sys.argv[1]
-    tenth = sys.argv[2]
+    tenth = float(sys.argv[2])
     td_amt = .80 # training data amount - inverse is validation amount
     if dataset == "diabetes":
         # The goal is to predict readmission
@@ -91,8 +91,8 @@ def pickle_data():
     # Now let's compress the data to a .pkl.gz for logistic_sgd's load_data()
     pickle_array = [[training_matrix, training_labels],
                     [valid_matrix, valid_labels],
-                    test_matrix, test_labels]
-    f = gzip.open("diabetes.pkl.gz", "wb")
+                    [test_matrix, test_labels]]
+    f = gzip.open("../data/diabetes.pkl.gz", "wb")
     pickle.dump(pickle_array, f)
     f.close()
 
