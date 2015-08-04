@@ -2,28 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="22a2f17b-8e08-4130-816c-57cc9fcf2405" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/DBN/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/DBN_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/SdA/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/SdA_gpu/00_labels.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/SdA_gpu/00_p_values.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/SdA_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/cA/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/cA_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/convolutional_mlp/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/convolutional_mlp_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/dA/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/dA_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/elman_nn/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/elman_nn_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/logistic_sgd/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/logistic_sgd_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/mlp/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/mlp_gpu/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/rbm/README.md" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/results/rbm_gpu/README.md" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/data/diabetes.pkl.gz" afterPath="$PROJECT_DIR$/data/diabetes.pkl.gz" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/10fold_cv.sh" afterPath="$PROJECT_DIR$/code/10fold_cv.sh" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/SdA.py" afterPath="$PROJECT_DIR$/code/SdA.py" />
     </list>
     <ignored path="gpuDeepLearning.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -47,8 +28,18 @@
       <file leaf-file-name="SdA.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/SdA.py">
           <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-9.612904">
+              <caret line="403" column="8" selection-start-line="403" selection-start-column="8" selection-end-line="403" selection-end-column="8" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="logistic_sgd.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/logistic_sgd.py">
+          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="51" column="6" selection-start-line="51" selection-start-column="2" selection-end-line="51" selection-end-column="92" />
+              <caret line="248" column="56" selection-start-line="248" selection-start-column="56" selection-end-line="248" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -67,8 +58,8 @@
       <file leaf-file-name="10fold_cv.sh" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/10fold_cv.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.72">
-              <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.9145946">
+              <caret line="47" column="1" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -82,8 +73,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/code/SdA.py" />
         <option value="$PROJECT_DIR$/code/10fold_cv.sh" />
+        <option value="$PROJECT_DIR$/code/SdA.py" />
       </list>
     </option>
   </component>
@@ -93,7 +84,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="1985" />
     <option name="y" value="52" />
-    <option name="width" value="1237" />
+    <option name="width" value="927" />
     <option name="height" value="1028" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -324,14 +315,14 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1985" y="52" width="1237" height="1028" extended-state="4" />
+    <frame x="1985" y="52" width="927" height="1028" extended-state="4" />
     <editor active="true" />
     <layout>
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15359741" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20496224" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -359,7 +350,9 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <option name="time" value="1" />
+    </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
@@ -402,10 +395,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/SdA.py">
+    <entry file="file://$PROJECT_DIR$/code/logistic_sgd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="6" selection-start-line="51" selection-start-column="2" selection-end-line="51" selection-end-column="92" />
+          <caret line="248" column="56" selection-start-line="248" selection-start-column="56" selection-end-line="248" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/SdA.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.612904">
+          <caret line="403" column="8" selection-start-line="403" selection-start-column="8" selection-end-line="403" selection-end-column="8" />
           <folding />
         </state>
       </provider>
@@ -420,8 +421,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/10fold_cv.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.72">
-          <caret line="37" column="0" selection-start-line="37" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.9145946">
+          <caret line="47" column="1" selection-start-line="47" selection-start-column="1" selection-end-line="47" selection-end-column="1" />
           <folding />
         </state>
       </provider>

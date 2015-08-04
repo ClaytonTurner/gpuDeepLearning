@@ -381,7 +381,6 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
     #print "No dataset specifically mentioned. Exiting..."
     #import sys
     #sys.exit(0)
-    
 
     datasets = load_data(dataset)
 
@@ -402,8 +401,8 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
         numpy_rng=numpy_rng,
         #n_ins=28 * 28,
         n_ins=train_set_x.get_value(borrow=True).shape[1],
-        #hidden_layers_sizes=[1000, 1000, 1000],
-        hidden_layers_sizes=[100, 100, 100],
+        hidden_layers_sizes=[1000, 1000, 1000],
+        #hidden_layers_sizes=[100, 100, 100],
         n_outs=3
         #n_outs=10
     )
@@ -530,9 +529,9 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
         fold = "0"+str(fold)
     else:
         fold = str(fold)
-    fname_str = "~/gpuDeepLearning/results/SdA"
-    if GPU:
-        fname_str += "_gpu"
+    fname_str = "~/gpuDeepLearning/results/"#"~/gpuDeepLearning/results/SdA"
+    #if GPU:
+    #    fname_str += "_gpu"
     fname = os.path.expanduser(fname_str+"/"+fold)
     numpy.savetxt(fname+"_labels.txt", best_y_a)
     numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
@@ -554,9 +553,8 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
 
 if __name__ == '__main__':
     import sys
-    gpu = True if sys.argv[1] != "0" else False
     my_dataset = "../data/"+sys.argv[2]+".pkl.gz"
     #run_SdA(pretraining_epochs=0, GPU=gpu, fold=0)
     my_fold = int(sys.argv[3])
-    run_SdA(pretraining_epochs=15, dataset=my_dataset, GPU=gpu, fold=my_fold) # GPU: this is just for saving files
+    run_SdA(pretraining_epochs=15, dataset=my_dataset, fold=my_fold)
                      # Use theano's env variables to actually switch it
