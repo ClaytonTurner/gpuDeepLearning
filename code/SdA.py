@@ -376,11 +376,6 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
     :param dataset: path the the pickled dataset
 
     """
-   
-    #if dataset == "mnist.pkl.gz":
-    #print "No dataset specifically mentioned. Exiting..."
-    #import sys
-    #sys.exit(0)
 
     datasets = load_data(dataset)
 

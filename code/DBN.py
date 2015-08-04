@@ -275,12 +275,30 @@ class DBN(object):
         def test_score():
             return [test_score_i(i) for i in xrange(n_test_batches)]
 
-        return train_fn, valid_score, test_score
+        info_i = theano.function(
+            [index],
+            self.info,
+            givens={
+                self.x: test_set_x[
+                    index * batch_size: (index + 1) * batch_size
+                ],
+                self.y: test_set_y[
+                    index * batch_size: (index + 1) * batch_size
+                ]
+            },
+        )
+
+        def info():
+            return [info_i(i) for i in xrange(n_test_batches)]
+
+        return train_fn, valid_score, test_score, info
 
 
 def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
              pretrain_lr=0.01, k=1, training_epochs=1000,
-             dataset='mnist.pkl.gz', batch_size=10):
+             dataset='mnist.pkl.gz', batch_size=10,
+             usingGPU=False, fold=-1
+         ):
     """
     Demonstrates how to train and test a Deep Belief Network.
 
@@ -315,9 +333,10 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     numpy_rng = numpy.random.RandomState(123)
     print '... building the model'
     # construct the Deep Belief Network
-    dbn = DBN(numpy_rng=numpy_rng, n_ins=28 * 28,
+    dbn = DBN(numpy_rng=numpy_rng,
+              n_ins=train_set_x.get_value(borrow=True).shape[1],
               hidden_layers_sizes=[1000, 1000, 1000],
-              n_outs=10)
+              n_outs=3)
 
     # start-snippet-2
     #########################
@@ -353,7 +372,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
     # get the training, validation and testing function for the model
     print '... getting the finetuning functions'
-    train_fn, validate_model, test_model = dbn.build_finetune_functions(
+    train_fn, validate_model, test_model, info = dbn.build_finetune_functions(
         datasets=datasets,
         batch_size=batch_size,
         learning_rate=finetune_lr
@@ -378,7 +397,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
     done_looping = False
     epoch = 0
-
+    best_p_values = []
     while (epoch < training_epochs) and (not done_looping):
         epoch = epoch + 1
         for minibatch_index in xrange(n_train_batches):
@@ -413,6 +432,11 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
                     # save best validation score and iteration number
                     best_validation_loss = this_validation_loss
                     best_iter = iter
+                    results = info()
+
+                    # save best validation score and iteration number
+                    best_validation_loss = this_validation_loss
+                    best_iter = iter
 
                     # test it on the test set
                     test_losses = test_model()
@@ -422,9 +446,35 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
                           (epoch, minibatch_index + 1, n_train_batches,
                            test_score * 100.))
 
+                    best_p_values = []
+                    best_y = []
+                    best_y_pred = []
+                    for j in range(len(results)):
+                        p_values = results[j][0]
+                        y_pred = results[j][1]
+                        y = results[j][2]
+                        for i in range(numpy.size(p_values,axis=0)):
+                                best_p_values.append(p_values[i,0]) # 1 for yes sle, 0 for no sle
+                                best_y.append(1-y[i])
+                                best_y_pred.append(y_pred[i])
+
             if patience <= iter:
                 done_looping = True
                 break
+
+    best_p_values_a = numpy.asarray(best_p_values)
+    best_y_a = numpy.asarray(best_y)
+
+    if fold < 10:
+        fold = "0"+str(fold)
+    else:
+        fold = str(fold)
+    fname_str = "~/gpuDeepLearning/results/"
+    
+    fname = os.path.expanduser(fname_str+"/"+fold)
+    numpy.savetxt(fname+"_labels.txt", best_y_a)
+    numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
+    print "best logistic values:"
 
     end_time = timeit.default_timer()
     print(
@@ -441,4 +491,8 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
 
 if __name__ == '__main__':
-    test_DBN()
+    import sys
+    usingGpu = True if sys.argv[1] != "0" else False
+    my_dataset = "../data/"+sys.argv[2]+".pkl.gz"
+    my_fold = int(sys.argv[3])
+    test_DBN(pretraining_epochs=15, dataset=my_dataset, usingGPU=usingGpu, fold=my_fold)
