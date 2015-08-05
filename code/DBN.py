@@ -138,6 +138,8 @@ class DBN(object):
         # minibatch given by self.x and self.y
         self.errors = self.logLayer.errors(self.y)
 
+        self.info = self.logLayer.info(self.sigmoid_layers[-1].output,self.y)
+        
     def pretraining_functions(self, train_set_x, batch_size, k):
         '''Generates a list of functions, for performing one step of
         gradient descent at a given layer. The function will require
@@ -470,7 +472,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     else:
         fold = str(fold)
     fname_str = "~/gpuDeepLearning/results/"
-    
+
     fname = os.path.expanduser(fname_str+"/"+fold)
     numpy.savetxt(fname+"_labels.txt", best_y_a)
     numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
