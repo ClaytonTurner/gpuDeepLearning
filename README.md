@@ -8,10 +8,6 @@ DBN.py - Deep Belief Network
 
 cA.py - Contractive Autoencoder
 
-convolutional_mlp.py - Convolutional NN
-
-elman_nn.py - Elman NN
-
 #### Supporting Files
 dA.py - denoising autoencoder using in SdA
 

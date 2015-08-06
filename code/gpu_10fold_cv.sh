@@ -6,32 +6,14 @@ if [ $# -lt 2 ]
     exit
 fi
 
-python pickle_data.py $1 1
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 1 >> ../results/fold01.out
+rm ../results/*.txt
+rm ../results/*.out
 
-python pickle_data.py $1 2
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 2 >> ../results/fold02.out
-
-python pickle_data.py $1 3
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 3 >> ../results/fold03.out
-
-python pickle_data.py $1 4
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 4 >> ../results/fold04.out
-
-python pickle_data.py $1 5
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 5 >> ../results/fold05.out
-
-python pickle_data.py $1 6
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 6 >> ../results/fold06.out
-
-python pickle_data.py $1 7
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 7 >> ../results/fold07.out
-
-python pickle_data.py $1 8
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 8 >> ../results/fold08.out
-
-python pickle_data.py $1 9
-THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 9 >> ../results/fold09.out
+for i in `seq 1 9`;
+do
+	python pickle_data.py $1 $i
+	THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 $i >> ../results/fold0$i.out
+done
 
 python pickle_data.py $1 10
 THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 10 >> ../results/fold10.out
