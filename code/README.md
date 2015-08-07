@@ -9,3 +9,4 @@ Data loading will also be altered
 
 The following algorithms are implemented
 * SdA.py (Stacked Denoising Autoencoders)
+* DBN.py (Deep Belief Network with stacked RBMs)

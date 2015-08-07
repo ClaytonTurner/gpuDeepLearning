@@ -45,8 +45,8 @@ from logistic_sgd import LogisticRegression, load_data
 from mlp import HiddenLayer
 from dA import dA
 
-theano.config.exception_verbosity='high'
-theano.config.on_unused_input='ignore'
+theano.config.exception_verbosity = 'high'
+theano.config.on_unused_input = 'ignore'
 
 # Flags to use with GPU
 # THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True'

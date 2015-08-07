@@ -1,6 +1,4 @@
 *.pyc
 *.swp
 *fold*.out
-*labels.txt
-*p_values.txt
 *pkl.gz
