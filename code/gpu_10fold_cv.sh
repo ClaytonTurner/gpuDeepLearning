@@ -11,12 +11,12 @@ rm ../results/*.out
 
 for i in `seq 1 9`;
 do
-	python 2outs_pickle_data.py $1 $i
+	python subSet_pickle_data.py $1 $i
 	echo "Running fold $i..."
 	THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 $i >> ../results/fold0$i.out
 done
 
-python 2outs_pickle_data.py $1 10
+python subSet_pickle_data.py $1 10
 echo "Running fold 10..."
 THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 10 >> ../results/fold10.out
 

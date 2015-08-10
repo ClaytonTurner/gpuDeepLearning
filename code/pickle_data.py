@@ -6,7 +6,7 @@ import gzip
 import numpy as np
 from sklearn.preprocessing import Imputer, OneHotEncoder
 import re
-
+import random
 
 def pickle_data():
     """
@@ -21,15 +21,22 @@ def pickle_data():
     if dataset == "diabetes":
         # The goal is to predict readmission
         print "Using "+dataset+" dataset"
-        datafile = open("../data/dataset_diabetes/diabetic_data.csv")
+        datafile = open("../data/dataset_diabetes/diabetic_data_2outs.csv")
         datalines = datafile.readlines()
         datafile.close()
         datalines = datalines[1:] # remove the headers
-        for i in range(len(datalines)):
+        readmitted_list = []
+        no_readmitted_list = []
+        for row in datalines:
             # The first 2 columns are unique identifiers - we know each row is a patient
-            datalines[i] = datalines[i].strip().split(",")[2:]
+            row = row.strip().split(",")[2:]
+            if(row[-1] == '<30'):
+                readmitted_list.append(row)
+            else:
+                no_readmitted_list.append(row)
 
-        temp_data_mat = np.matrix(datalines)
+        sub_set = random.sample(readmitted_list, 1000) + random.sample(no_readmitted_list, 1000)       
+        temp_data_mat = np.matrix(sub_set)
         # We need to convert categorical data to ints/floats so we can use one hot encoding
         data_mat = []
         for col in temp_data_mat.T:
@@ -48,6 +55,7 @@ def pickle_data():
 
         # convert out of the column format
         data_mat = np.array(data_mat).T
+        np.random.shuffle(data_mat)
         # Imputer converts missing values (?'s) to the mean of the column
         #   mean, median, and mode are available options for strategy
         imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
