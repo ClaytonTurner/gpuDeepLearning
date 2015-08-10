@@ -337,7 +337,8 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     # construct the Deep Belief Network
     dbn = DBN(numpy_rng=numpy_rng,
               n_ins=train_set_x.get_value(borrow=True).shape[1],
-              hidden_layers_sizes=[1000, 1000, 1000],
+              #hidden_layers_sizes=[1000, 1000, 1000],
+              hidden_layers_sizes=[100],
               n_outs=2)
 
     # start-snippet-2
