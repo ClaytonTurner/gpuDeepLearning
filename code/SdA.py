@@ -550,5 +550,6 @@ if __name__ == '__main__':
     import sys
     my_dataset = "../data/"+sys.argv[2]+".pkl.gz"
     my_fold = int(sys.argv[3])
-    run_SdA(pretraining_epochs=15, dataset=my_dataset, fold=my_fold)
+    run_SdA(pretraining_epochs=0, training_epochs=1000,
+            dataset=my_dataset, fold=my_fold)
                      # Use theano's env variables to actually switch it

@@ -498,4 +498,4 @@ if __name__ == '__main__':
     usingGpu = True if sys.argv[1] != "0" else False
     my_dataset = "../data/"+sys.argv[2]+".pkl.gz"
     my_fold = int(sys.argv[3])
-    test_DBN(pretraining_epochs=15, dataset=my_dataset, usingGPU=usingGpu, fold=my_fold)
+    test_DBN(pretraining_epochs=0, training_epochs=100000, finetune_lr=.1, dataset=my_dataset, batch_size=10, usingGPU=usingGpu, fold=my_fold)

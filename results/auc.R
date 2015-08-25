@@ -1,7 +1,7 @@
 library(AUC)
 
-alg_labels = "DBN/labels.txt"
-alg_p_values = "DBN/p_values.txt"
+alg_labels = "labels.txt"
+alg_p_values = "p_values.txt"
 
 labels <- read.csv(alg_labels,sep="\n",header=F)
 predprobs <- read.csv(alg_p_values,sep="\n",header=F)
