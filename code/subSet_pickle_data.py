@@ -27,18 +27,20 @@ def pickle_data():
         datalines = datalines[1:] # remove the headers
         readmitted_list = []
         no_readmitted_list = []
+        number_readmissions = 0
         for row in datalines:
             # select a sub set o features
             row = row.strip().split(",")
-            row = [row[j] for j in [6,7,8,12,16,17,21,49]]
-
+            #row = [row[j] for j in [6,7,8,12,16,17,21,49]]
+            row = [row[j] for j in [6,7,8,12,17,49]] #decision tree
             if(row[-1] == '<30'):
+                number_readmissions += 1
                 readmitted_list.append(row)
             else:
                 no_readmitted_list.append(row)
 
-        sub_set = random.sample(readmitted_list, 1000) + random.sample(no_readmitted_list, 1000)       
-        temp_data_mat = np.matrix(sub_set)
+        sub_set = random.sample(readmitted_list, number_readmissions) +\
+                    random.sample(no_readmitted_list, number_readmissions)    
 
         # We need to convert categorical data to ints/floats so we can use one hot encoding
         data_mat = []
