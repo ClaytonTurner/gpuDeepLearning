@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 if [ $# -lt 2 ]
   then
-    echo "Proper usage: sh 10fold_cv.sh <dataset> <algorithm>"
-    echo "Example: sh gpu_10fold_cv.sh diabetes SdA.py"
+    echo "Proper usage: ./10fold_cv.sh <dataset> <algorithm>"
+    echo "Example: ./gpu_10fold_cv.sh diabetes SdA.py"
     exit
 fi
 
@@ -11,12 +11,14 @@ rm ../results/*.out
 
 for i in `seq 1 9`;
 do
-	python subSet_pickle_data.py $1 $i
+	python pickle_data.py $i
 	echo "Running fold $i..."
 	THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 $i >> ../results/fold0$i.out
+	rm ../data/diabetes.pkl.gz
+	echo ""
 done
 
-python subSet_pickle_data.py $1 10
+python pickle_data.py 10
 echo "Running fold 10..."
 THEANO_FLAGS='cuda.root=/usr/local/cuda-7.0,floatX=float32,device=gpu0,nvcc.fastmath=True' python $2 1 $1 10 >> ../results/fold10.out
 

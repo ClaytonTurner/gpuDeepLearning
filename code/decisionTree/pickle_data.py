@@ -13,7 +13,7 @@ def pickle_data():
 
     # The goal is to predict readmission
     print "Using diabetes dataset"
-    datafile = open("../../data/dataset_diabetes/formatted_diabetic_data.csv")
+    datafile = open("../../data/dataset_diabetes/subset_features_data.csv")
     datalines = datafile.readlines()
     datafile.close()
     datalines = datalines[1:] # remove the headers
@@ -21,31 +21,30 @@ def pickle_data():
     no_readmissions = []
     for row in datalines:
         row = row.strip().split(",")
-        #row = [row[j] for j in [0,2,3,4,8,9,10,15]] #decision tree
-
+        #row = [row[j] for j in [0,2,3,4,8,9,10,15]] #sub set decision tree
         if(row[-1] == 'Yes'):
             readmissions.append(row)
         else:
             no_readmissions.append(row)
 
-    sub_set = random.sample(readmissions, 10000) + random.sample(no_readmissions, 10000)       
-    temp_data_mat = np.matrix(sub_set)
+    print 'number of readmissions:', len(readmissions)
+    sub_set = random.sample(readmissions, len(readmissions))\
+                 + random.sample(no_readmissions, len(readmissions))       
+    
+    temp_data_mat = np.array(sub_set)
     # We need to convert categorical data to ints/floats so we can use one hot encoding
     data_mat = []
     for col in temp_data_mat.T:
         unique_vals = []
-        col_list = col.tolist()
-        for ii in range(len(col_list)):
-            for i in range(len(col_list[ii])):
-                item = col_list[ii][i]
-                if item not in unique_vals:
-                    unique_vals.append(item)
-                
-                if item == "?":
-                    col_list[ii][i] = "NaN"
-                elif not re.match("^\d+",item):
-                    col_list[ii][i] = unique_vals.index(item)   
-        data_mat.append(col_list[0])
+        for (ii, item) in enumerate(col):
+            if item not in unique_vals:
+                unique_vals.append(item)
+            
+            if item == "?":
+                col[ii] = "NaN"
+            elif not re.match("^\d+",item):
+                col[ii] = unique_vals.index(item)  
+        data_mat.append(col)
 
     # # convert out of the column format
     data_mat = np.array(data_mat).T
@@ -60,7 +59,6 @@ def pickle_data():
     # encoder = OneHotEncoder(categorical_features=categorical_feats, sparse=False)
     # data_mat = encoder.fit_transform(data_mat)
 
-
     np.random.shuffle(data_mat)
 
     y = data_mat[:,-1]
@@ -74,8 +72,8 @@ def pickle_data():
     test_end = int(len(x)*0.3)
     test_matrix = x[test_start:test_end]
     test_labels = y[test_start:test_end]
-    training_matrix = np.delete(x, [i for i in range(test_start, test_end)], 0)
-    training_labels = np.delete(y, [i for i in range(test_start, test_end)], 0)
+    training_matrix = x[test_end:-1]
+    training_labels = y[test_end:-1]
 
     # Now let's compress the data to a .pkl.gz for logistic_sgd's load_data()
     pickle_array = [[training_matrix, training_labels],
