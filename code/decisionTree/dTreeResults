@@ -1,0 +1,13 @@
+Using diabetes dataset
+number of readmissions: 6277
+['>200', '>300', 'None', 'Norm']
+['Down', 'No', 'Steady', 'Up']
+['Down', 'No', 'Steady', 'Up']
+['Down', 'No', 'Steady', 'Up']
+Feature count after encoding: 15 
+
+deep 3
+Cross Validation 10 folds
+Overall accuracy: 0.583824701195
+Readmited accuracy: 0.639743514302 
+

@@ -298,8 +298,7 @@ class DBN(object):
 
 def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
              pretrain_lr=0.01, k=1, training_epochs=1000,
-             dataset='mnist.pkl.gz', batch_size=10,
-             usingGPU=False, fold=-1
+             dataset='mnist.pkl.gz', batch_size=10, fold=-1
          ):
     """
     Demonstrates how to train and test a Deep Belief Network.
@@ -468,10 +467,7 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     best_p_values_a = numpy.asarray(best_p_values)
     best_y_a = numpy.asarray(best_y)
 
-    if fold < 10:
-        fold = "0"+str(fold)
-    else:
-        fold = str(fold)
+    fold = "0"+str(fold) if (fold < 10) else str(fold)
     fname_str = "~/gpuDeepLearning/results/"
 
     fname = os.path.expanduser(fname_str+"/"+fold)
@@ -494,8 +490,6 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
 
 
 if __name__ == '__main__':
-    import sys
-    usingGpu = True if sys.argv[1] != "0" else False
-    my_dataset = "../data/"+sys.argv[2]+".pkl.gz"
-    my_fold = int(sys.argv[3])
-    test_DBN(pretraining_epochs=0, training_epochs=100000, finetune_lr=.1, dataset=my_dataset, batch_size=10, usingGPU=usingGpu, fold=my_fold)
+    my_dataset = "../data/diabetes.pkl.gz"
+    my_fold = int(sys.argv[1])
+    test_DBN(pretraining_epochs=0, training_epochs=1000, finetune_lr=.1, dataset=my_dataset, batch_size=10, fold=my_fold)
