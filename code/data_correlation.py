@@ -7,7 +7,7 @@ from sklearn.preprocessing import Imputer
 
 def data_correlation():
 	print "Using diabetes dataset"
-	datafile = open("../../data/dataset_diabetes/original_data.csv")
+	datafile = open("../data/dataset_diabetes/original_data.csv")
 	datalines = datafile.readlines()
 	datafile.close()
 	headers = datalines[0].strip().split(",")
@@ -29,6 +29,7 @@ def data_correlation():
 	temp_data_mat = np.array(sub_set)
 
 	# We need to convert categorical data to ints/floats so we can use one hot encoding
+	del headers[18:21]
 	data_mat = []
 	for (index, col) in enumerate(temp_data_mat.T):
 		if(index not in [18,19,20]): #remove diag columns bc their values are a mixed of strings and numbers
@@ -55,8 +56,16 @@ def data_correlation():
 
 	np.random.shuffle(data_mat)
 	data_by_col = data_mat.T
-	print data_by_col[-1][0:100]
+
+	import collections
+
+	d = {}
 	for i in range(len(data_by_col)-1):
-		print headers[i], pearsonr(data_by_col[i], data_by_col[-1])[0]
+		corre = pearsonr(data_by_col[i], data_by_col[-1])[0]
+		d[abs(corre)] = [corre, headers[i]]
+
+	od = collections.OrderedDict(reversed(sorted(d.items())))
+	for v in od.values():
+		print v
 
 data_correlation()

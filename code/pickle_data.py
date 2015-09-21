@@ -7,6 +7,7 @@ import numpy as np
 import re
 import random
 from sklearn import preprocessing
+import csv
 
 def pickle_data():
     """
@@ -16,7 +17,6 @@ def pickle_data():
         print >> sys.stderr, "Proper usage of pickle_data.py: pickle_data.py <tenth of dataset for testing>"
         sys.exit(1)
     tenth = float(sys.argv[1])
-    td_amt = .80 # training data amount - inverse is validation amount
     # The goal is to predict readmission
     print "Using diabetes dataset"
     datafile = open("../data/dataset_diabetes/subset_features_data.csv")
@@ -55,6 +55,8 @@ def pickle_data():
     # convert out of the column format
     data_mat = np.array(data_mat).T
 
+    np.savetxt("tranformed_data.csv", data_mat, delimiter=",", fmt="%s")
+
 
     # Imputer converts missing values (?'s) to the mean of the column
     #   mean, median, and mode are available options for strategy
@@ -81,12 +83,20 @@ def pickle_data():
     test_end = int((tenth)*rows/kfold)
     test_matrix = x[test_start:test_end]
     test_labels = y[test_start:test_end]
-    training_matrix = np.delete(x, [i for i in range(test_start, test_end)], 0)
-    training_labels = np.delete(y, [i for i in range(test_start, test_end)], 0)
-    # Validation after testing so we don't have to worry about the meshing
-    #   of validation and testing data
-    valid_matrix = x[(td_amt*rows):]
-    valid_labels = y[(td_amt*rows):]
+
+
+    x_left = np.delete(x, [i for i in range(test_start, test_end)], 0)
+    y_left = np.delete(y, [i for i in range(test_start, test_end)], 0)
+
+    td_amt = .80 # training data amount - inverse is validation amount
+    valid_start = int(len(x_left)*td_amt)
+
+    training_matrix = x_left[:valid_start]
+    training_labels = y_left[:valid_start]
+
+    valid_matrix = x_left[valid_start:]
+    valid_labels = y_left[valid_start:]
+
 
     # Now let's compress the data to a .pkl.gz for logistic_sgd's load_data()
     pickle_array = [[training_matrix, training_labels],
