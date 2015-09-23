@@ -395,8 +395,8 @@ def run_SdA(finetune_lr=0.1, pretraining_epochs=15,
         numpy_rng=numpy_rng,
         #n_ins=28 * 28,
         n_ins=train_set_x.get_value(borrow=True).shape[1],
-        hidden_layers_sizes=[100],
-        #hidden_layers_sizes=[100, 100, 100],
+        #hidden_layers_sizes=[100],
+        hidden_layers_sizes=[100, 100, 100],
         n_outs=2
         #n_outs=10
     )
@@ -547,4 +547,4 @@ if __name__ == '__main__':
     my_dataset = "../data/diabetes.pkl.gz"
     my_fold = int(sys.argv[1])
     run_SdA(pretraining_epochs=0, training_epochs=1000,
-            dataset=my_dataset, fold=my_fold)
+            dataset=my_dataset, fold=my_fold, batch_size=5)
