@@ -19,26 +19,33 @@ def pickle_data():
     tenth = float(sys.argv[1])
     # The goal is to predict readmission
     print "Using diabetes dataset"
-    datafile = open("../data/dataset_diabetes/subset_features_data.csv")
-    datalines = datafile.readlines()
-    datafile.close()
-    headers = datalines[0].strip().split(",")
-    datalines = datalines[1:] # remove the headers
-    readmissions = []
-    no_readmissions = []
-    for row in datalines:
-        row = row.strip().split(",")
-        if(row[-1]=='Yes'):
-            row[-1] = 1
-            readmissions.append(row)
-        else:
-            row[-1] = 0
-            no_readmissions.append(row)
+    # datafile = open("../data/dataset_diabetes/subset_features_data.csv")
+    # datalines = datafile.readlines()
+    # datafile.close()
+    # headers = datalines[0].strip().split(",")
+    # datalines = datalines[1:] # remove the headers
+    # readmissions = []
+    # no_readmissions = []
+    # for row in datalines:
+    #     row = row.strip().split(",")
+    #     if(row[-1]=='Yes'):
+    #         row[-1] = 1
+    #         readmissions.append(row)
+    #     else:
+    #         row[-1] = 0
+    #         no_readmissions.append(row)
 
-    print 'number of readmissions:', len(readmissions)
-    sub_set = random.sample(no_readmissions, len(readmissions)) + readmissions    
+    # print 'number of readmissions:', len(readmissions)
+    # sub_set = random.sample(no_readmissions, len(readmissions)) + readmissions    
 
-    temp_data_mat = np.array(sub_set)
+    # temp_data_mat = np.array(sub_set)
+    # np.random.shuffle(temp_data_mat)
+
+    data_reader = csv.reader(open("../data/dataset_diabetes/subset_features_data.csv", "rb"))
+    headers = data_reader.next()
+    data_list = [row for row in data_reader]
+
+    temp_data_mat = np.array(data_list)
     # We need to convert categorical data to ints/floats so we can use one hot encoding
     data_mat = []
     for (index, col) in enumerate(temp_data_mat.T):
@@ -55,7 +62,7 @@ def pickle_data():
     # convert out of the column format
     data_mat = np.array(data_mat).T
 
-    np.savetxt("tranformed_data.csv", data_mat, delimiter=",", fmt="%s")
+    #np.savetxt("tranformed_data.csv", data_mat, delimiter=",", fmt="%s")
 
 
     # Imputer converts missing values (?'s) to the mean of the column
@@ -68,7 +75,6 @@ def pickle_data():
     encoder = preprocessing.OneHotEncoder(categorical_features=categorical_feats, sparse=False)
     data_mat = encoder.fit_transform(data_mat)
 
-    np.random.shuffle(data_mat)
 
     y = data_mat[:,-1]
     x = data_mat[:,:-1]

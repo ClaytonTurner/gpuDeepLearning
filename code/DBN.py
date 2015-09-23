@@ -471,8 +471,8 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
     fname_str = "~/gpuDeepLearning/results/"
 
     fname = os.path.expanduser(fname_str+"/"+fold)
-    numpy.savetxt(fname+"_labels.txt", best_y_a)
-    numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
+    #numpy.savetxt(fname+"_labels.txt", best_y_a)
+    #numpy.savetxt(fname+"_p_values.txt", best_p_values_a)
     print "best logistic values:"
 
     end_time = timeit.default_timer()
@@ -487,6 +487,10 @@ def test_DBN(finetune_lr=0.1, pretraining_epochs=100,
                           os.path.split(__file__)[1] +
                           ' ran for %.2fm' % ((end_time - start_time)
                                               / 60.))
+
+    with open("../results/testPerfDBN.txt", "a") as test_perf_file:
+        test_perf_file.write(str(1. - test_score))
+        test_perf_file.write('\n')
 
 
 if __name__ == '__main__':

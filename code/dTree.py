@@ -7,37 +7,41 @@ from sklearn.tree import DecisionTreeClassifier, export_graphviz
 from sklearn.cross_validation import cross_val_score, cross_val_predict
 from sklearn.preprocessing import Imputer, OneHotEncoder, LabelEncoder
 from sklearn.metrics import recall_score, accuracy_score
+import csv
 
 
 print "Using diabetes dataset"
-datafile = open("../data/dataset_diabetes/subset_features_data.csv")
-datalines = datafile.readlines()
-datafile.close()
-headers = datalines[0].strip().split(",")
-datalines = datalines[1:] # remove the headers
-readmissions = []
-no_readmissions = []
-for row in datalines:
-	row = row.strip().split(",")
-	if(row[-1]=='Yes'):
-		row[-1] = 1
-		readmissions.append(row)
-	else:
-		row[-1] = 0
-		no_readmissions.append(row)
+# datafile = open("../data/dataset_diabetes/subset_features_data.csv")
+# datalines = datafile.readlines()
+# datafile.close()
+# headers = datalines[0].strip().split(",")
+# datalines = datalines[1:] # remove the headers
+# readmissions = []
+# no_readmissions = []
+# for row in datalines:
+# 	row = row.strip().split(",")
+# 	if(row[-1]=='Yes'):
+# 		row[-1] = 1
+# 		readmissions.append(row)
+# 	else:
+# 		row[-1] = 0
+# 		no_readmissions.append(row)
 
-print 'number of readmissions:', len(readmissions)
-sub_set = random.sample(no_readmissions, len(readmissions)) + readmissions    
+# print 'number of readmissions:', len(readmissions)
+# sub_set = random.sample(no_readmissions, len(readmissions)) + readmissions    
 
-temp_data_mat = np.array(sub_set)
+data_reader = csv.reader(open("../data/dataset_diabetes/subset_features_data.csv", "rb"))
+headers = data_reader.next()
+data_list = [row for row in data_reader]
+
+temp_data_mat = np.array(data_list)
 # We need to convert categorical data to ints/floats so we can use one hot encoding
 data_mat = []
 for col in temp_data_mat.T:
 	if(not re.match("^\d+",col[0])):
 		le = LabelEncoder()
-		le.fit(col)
-		#print (list(le.classes_))
-		col = le.transform(col)
+		col = le.fit_transform(col)
+		print (list(le.classes_))
 	data_mat.append(col)
 
 # convert out of the column format
@@ -48,7 +52,7 @@ data_mat = np.array(data_mat).T
 imp = Imputer(missing_values="NaN", strategy="mean", axis=0, copy=False)
 data_mat = imp.fit_transform(data_mat)
 
-np.random.shuffle(data_mat)
+#np.random.shuffle(data_mat)
 
 y = data_mat[:,-1]
 x = data_mat[:,:-1]
