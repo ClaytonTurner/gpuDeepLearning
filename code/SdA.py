@@ -547,4 +547,4 @@ if __name__ == '__main__':
     my_dataset = "../data/diabetes.pkl.gz"
     my_fold = int(sys.argv[1])
     run_SdA(pretraining_epochs=0, training_epochs=1000,
-            dataset=my_dataset, fold=my_fold, batch_size=5)
+            dataset=my_dataset, fold=my_fold, batch_size=10)

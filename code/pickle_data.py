@@ -8,6 +8,8 @@ import re
 import random
 from sklearn import preprocessing
 import csv
+sys.path.append('../data/dataset_diabetes')
+import DatabaseManager
 
 def pickle_data():
     """
@@ -22,20 +24,28 @@ def pickle_data():
     data_reader = csv.reader(open("../data/dataset_diabetes/subset_features_data.csv", "rb"))
     headers = data_reader.next()
     data_list = [row for row in data_reader]
-
+    
     temp_data_mat = np.array(data_list)
+
     # We need to convert categorical data to ints/floats so we can use one hot encoding
     data_mat = []
+ 
     for (index, col) in enumerate(temp_data_mat.T):
-        if(index in [11,12,13,14]):
-            le = preprocessing.LabelEncoder()
-            le.fit(col)
-            #print (list(le.classes_))
-            col = le.transform(col)
-        elif(index in [3,4,5,6,7,8,9,10]):
+        if(index in DatabaseManager.get_indexes_to_encode()):
+            unique_vals = []
+            for (ii, item) in enumerate(col):
+                if item not in unique_vals:
+                    unique_vals.append(item)
+                
+                if item == "?":
+                    col[ii] = "NaN"
+                else:
+                    col[ii] = unique_vals.index(item)
+        elif(index in DatabaseManager.get_indexes_to_scale()):
             col = preprocessing.scale(col.astype(float))
-            #print col
+
         data_mat.append(col)
+
 
     # convert out of the column format
     data_mat = np.array(data_mat).T
@@ -49,7 +59,7 @@ def pickle_data():
     data_mat = imp.fit_transform(data_mat)
 
     # OneHotEncode categorical features so we can use them in NNs
-    categorical_feats = [0,1,2,11,12,13,14]
+    categorical_feats = DatabaseManager.get_indexes_to_hot_encode()
     encoder = preprocessing.OneHotEncoder(categorical_features=categorical_feats, sparse=False)
     data_mat = encoder.fit_transform(data_mat)
 
